@@ -1,0 +1,1063 @@
+<style>
+  body {
+    background: #1e1f21;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropbtn {
+    background-color: #f1f1f1;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+  .dropdown-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dropdown-content ul li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+  }
+
+  .dropdown-content ul li a:hover {
+    background-color: #ddd;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown:hover .dropbtn {
+    background-color: #ccc;
+  }
+
+  .timetable-container {
+    z-index: 9999999999999;
+    border-radius: 2rem;
+    border: 2px solid #d1d1d1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
+    padding: 20px;
+    min-width: 696.5px;
+    max-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+    overflow: hidden;
+    transition: all 0.1s ease-in-out;
+    color: white;
+    font-family: monospace;
+    min-height: 500px;
+  }
+
+  .timetable {
+    color: white;
+    font-family: monospace;
+    transition: all 0.9s;
+  }
+
+  .timetable:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px white;
+  }
+
+  #table2,
+  #table2-6,
+  #table2-1,
+  #table2-2,
+  #table2-3,
+  #table2-4 {
+    display: none;
+    color: #d1d1d1;
+    font-family: monospace;
+  }
+
+  #table1,
+  #table1-6,
+  #table1-1,
+  #table1-2,
+  #table1-3,
+  #table1-4 {
+    display: block;
+  }
+
+  .horizontal-scroll-timetable {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 69px;
+  }
+
+  .timetable-container:hover {
+    box-shadow: 0 0 100px rgba(255, 255, 255, 0.75);
+    border: 2px solid white;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(10px);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    font-family: monospace;
+  }
+
+  th,
+  td {
+    border: 5px solid white;
+    padding: 8px;
+    text-align: left;
+  }
+
+  tr td:nth-child(even) {
+    background-color: #4eb0ca;
+    color: white;
+    font-family: monospace;
+  }
+
+  tr td:nth-child(odd) {
+    background-color: #57c4e1;
+    color: white;
+    font-family: monospace;
+  }
+
+  th {
+    background-color: #3e8ca1;
+  }
+
+  .toggle-button {
+    background-color: #4CAF50;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    animation: pulse 1.5s ease alternate infinite;
+    /* Animation */
+  }
+
+  .toggle-button:hover {
+    background-color: #ffffff;
+    /* White */
+    color: #4CAF50;
+    /* Dark Green */
+  }
+
+  .toggle-button:active {
+    animation: click-effect 0.01s ease forwards;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes click-effect {
+    0% {}
+
+    100% {
+      background: green;
+      color: white;
+    }
+  }
+</style>
+<html>
+<button onclick="back()">Back to Brungle</button>
+<div class="timetable-container" style="display: block;">
+  <div class="dropdown">
+    <button class="dropbtn">Select Class</button>
+    <div class="dropdown-content">
+      <ul>
+        <li> REMINDER: ADDING YEAR 7, REST OF 8 AND YEAR 9
+        <li><a onclick="eightOneChange()">8.1 ( Unavailable! )</a></li>
+        <li><a onclick="eightTwoChange()">8.2 ( Available Partially! )</a></li>
+        <li><a onclick="eightThreeChange()">8.3</a></li>
+        <li><a onclick="eightFourChange()">8.4 ( Unavailable! )</a></li>
+        <li><a onclick="eightFiveChange()">8.5</a></li>
+        <li><a onclick="eightSixChange()">8.6 ( Unavailable! )</a></li>
+        <li><a onclick="createTimetable()">Custom</a></li>
+      </ul>
+    </div>
+  </div>
+  <section class="eight-five" style="display: none">
+    <button class="toggle-button" onclick="toggleEightFive()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.5 </h1>
+    <div id="table1">
+      <h1> Week 1 </h1>
+      <b>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>Maths</td>
+            <td>English L13</td>
+            <td>PSHE</td>
+            <td>Maths</td>
+            <td>Music A14</td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>Spanish G13</td>
+            <td>Drama A1</td>
+            <td>Chemisty P13</td>
+            <td>History H14</td>
+            <td>Spanish G13</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Physics P11</td>
+            <td>Geography H14</td>
+            <td>English L13</td>
+            <td>German G14</td>
+            <td>Comp Sci L1</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>DT P2 / Food Sci P4</td>
+            <td>PRE G1</td>
+            <td>PE</td>
+            <td>History H14</td>
+            <td>Maths</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>English L13</td>
+            <td>Dance A6</td>
+            <td>Art P6</td>
+            <td>Games</td>
+            <td>German G14</td>
+          </tr>
+        </table>
+    </div>
+
+    <div id="table2">
+      <br>
+      <h1 style="color: white"> Week 2 </h1>
+      <table class="timetable">
+        <tr>
+          <th>Period</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+        <tr>
+          <td><b>1</b></td>
+          <td>English L13</td>
+          <td>Maths</td>
+          <td>English L13</td>
+          <td>Biology C4💥</td>
+          <td>Food Sci P4 / DT P2</td>
+        </tr>
+        <tr>
+          <td> 2 </td>
+          <td>Drama A1</td>
+          <td>Geography H14</td>
+          <td>Geography H14</td>
+          <td>Chemistry P13</td>
+          <td>German G14</td>
+        </tr>
+        <tr>
+          <td> 3 </td>
+          <td>PRE G12</td>
+          <td>Art P6</td>
+          <td>Maths</td>
+          <td>Maths</td>
+          <td>English L13</td>
+        </tr>
+        <tr>
+          <td> 4 </td>
+          <td>PE</td>
+          <td>Spanish G16</td>
+          <td>History H14</td>
+          <td>Dance A6</td>
+          <td>Biology C4💥</td>
+        </tr>
+        <tr>
+          <td> 5 </td>
+          <td>Maths</td>
+          <td>Comp Sci L1</td>
+          <td>Physics P11</td>
+          <td>Games</td>
+          <td>Music A14</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="eight-six" style="display: none">
+    <button class="toggle-button" onclick="toggleEightSix()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.6
+      <div id="table1-6">
+        <br>
+        <h1> Week 1 </h1>
+        <b>
+          <table class="timetable">
+            <tr>
+              <th>Period</th>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+            </tr>
+            <tr>
+              <td><b>1</b></td>
+              <td>Geography</td>
+              <td>German</td>
+              <td>PSHE</td>
+              <td>Geography</td>
+              <td>PE</td>
+            </tr>
+            <tr>
+              <td> 2 </td>
+              <td>Maths</td>
+              <td>Maths</td>
+              <td>English</td>
+              <td>Art</td>
+              <td>Physics</td>
+            </tr>
+            <tr>
+              <td> 3 </td>
+              <td>Food Science</td>
+              <td>History</td>
+              <td>Music</td>
+              <td>English</td>
+              <td>Geography</td>
+            </tr>
+            <tr>
+              <td> 4 </td>
+              <td>History</td>
+              <td>Computer Science</td>
+              <td>Drama</td>
+              <td>PRE</td>
+              <td>English</td>
+            </tr>
+            <tr>
+              <td> 5 </td>
+              <td>Spanish</td>
+              <td>Chemistry</td>
+              <td>Maths</td>
+              <td>Games</td>
+              <td>Dance</td>
+            </tr>
+          </table>
+      </div>
+
+      <div id="table2-6">
+        <br>
+        <h1 style="color: white"> Week 2 </h1>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>English</td>
+            <td>DT</td>
+            <td>Maths</td>
+            <td>PE</td>
+            <td>Biology</td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>Spanish</td>
+            <td>Drama</td>
+            <td>Physics</td>
+            <td>Chemistry</td>
+            <td>German</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Dance</td>
+            <td>English</td>
+            <td>History</td>
+            <td>PRE</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>Biology</td>
+            <td>Maths</td>
+            <td>Art</td>
+            <td>English</td>
+            <td>Computer Science</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>Maths</td>
+            <td>German</td>
+            <td>Music</td>
+            <td>Games</td>
+            <td>Maths</td>
+          </tr>
+        </table>
+      </div>
+  </section>
+  <section class="eight-three" style="display: none">
+    <button class="toggle-button" onclick="toggleEightThree()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.3 </h1>
+    <div id="table1-3">
+      <h1> Week 1 </h1>
+      <b>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>Maths</td>
+            <td>PE</td>
+            <td>PSHE</td>
+            <td>Music A15</td>
+            <td>Computer Science L1</td>
+            </td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>English L19</td>
+            <td>English L19</td>
+            <td>History H12</td>
+            <td>PRE H13</td>
+            <td>English L19</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Biology C4💥</td>
+            <td>Dance A6</td>
+            <td>Maths</td>
+            <td>French G17</td>
+            <td>Geography H11</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>Art P6</td>
+            <td>Spanish G13</td>
+            <td>Physics P11</td>
+            <td>Drama A1</td>
+            <td>Geography H11</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>Spanish G13</td>
+            <td>Chemistry C12</td>
+            <td>Geography H11</td>'
+            <td>Games</td>
+            <td>Maths</td>
+          </tr>
+        </table>
+    </div>
+
+    <div id="table2-3">
+      <br>
+      <h1 style="color: white"> Week 2 </h1>
+      <table class="timetable">
+        <tr>
+          <th>Period</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+        <tr>
+          <td><b>1</b></td>
+          <td>Art P6</td>
+          <td>Chemistry C12</td>
+          <td>History H13</td>
+          <td>Maths</td>
+          <td>English L19</td>
+        </tr>
+        <tr>
+          <td> 2 </td>
+          <td>Food Sci P4 / DT P3</td>
+          <td>Physics P11</td>
+          <td>French G16</td>
+          <td>History H16</td>
+          <td>Comp Sci L1</td>
+        </tr>
+        <tr>
+          <td> 3 </td>
+          <td>Dance A6</td>
+          <td>English L19</td>
+          <td>Maths</td>
+          <td>French G17</td>
+          <td>Maths</td>
+        </tr>
+        <tr>
+          <td> 4 </td>
+          <td>Biology C4💥</td>
+          <td>Maths</td>
+          <td>English L19</td>
+          <td>Spanish G13</td>
+          <td>DT P3 / Food Sci P4</td>
+        </tr>
+        <tr>
+          <td> 5 </td>
+          <td>Drama A1</td>
+          <td>PRE H13</td>
+          <td>PE</td>
+          <td>Games</td>
+          <td>Music A15</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+  <section class="eight-four" style="display: none">
+    <button class="toggle-button" onclick="toggleEightFour()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.4
+      <div id="table1-4">
+        <br>
+        <h1> Week 1 </h1>
+        <b>
+          <table class="timetable">
+            <tr>
+              <th>Period</th>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+            </tr>
+            <tr>
+              <td><b>1</b></td>
+              <td>Geography</td>
+              <td>German</td>
+              <td>PSHE</td>
+              <td>Geography</td>
+              <td>PE</td>
+            </tr>
+            <tr>
+              <td> 2 </td>
+              <td>Maths</td>
+              <td>Maths</td>
+              <td>English</td>
+              <td>Art</td>
+              <td>Physics</td>
+            </tr>
+            <tr>
+              <td> 3 </td>
+              <td>Food Science</td>
+              <td>History</td>
+              <td>Music</td>
+              <td>English</td>
+              <td>Geography</td>
+            </tr>
+            <tr>
+              <td> 4 </td>
+              <td>History</td>
+              <td>Computer Science</td>
+              <td>Drama</td>
+              <td>PRE</td>
+              <td>English</td>
+            </tr>
+            <tr>
+              <td> 5 </td>
+              <td>Spanish</td>
+              <td>Chemistry</td>
+              <td>Maths</td>
+              <td>Games</td>
+              <td>Dance</td>
+            </tr>
+          </table>
+      </div>
+
+      <div id="table2-4">
+        <br>
+        <h1 style="color: white"> Week 2 </h1>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>English</td>
+            <td>DT</td>
+            <td>Maths</td>
+            <td>PE</td>
+            <td>Biology</td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>Spanish</td>
+            <td>Drama</td>
+            <td>Physics</td>
+            <td>Chemistry</td>
+            <td>German</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Dance</td>
+            <td>English</td>
+            <td>History</td>
+            <td>PRE</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>Biology</td>
+            <td>Maths</td>
+            <td>Art</td>
+            <td>English</td>
+            <td>Computer Science</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>Maths</td>
+            <td>German</td>
+            <td>Music</td>
+            <td>Games</td>
+            <td>Maths</td>
+          </tr>
+        </table>
+      </div>
+  </section>
+  <section class="eight-one" style="display: none">
+    <button class="toggle-button" onclick="toggleEightOne()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.1 </h1>
+    <div id="table1-1">
+      <h1> Week 1 </h1>
+      <b>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>PRE</td>
+            <td>Dance</td>
+            <td>PSHE</td>
+            <td>English</td>
+            <td>PE</td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>Maths</td>
+            <td>Maths</td>
+            <td>History</td>
+            <td>Geography</td>
+            <td>Computer Science</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Dance</td>
+            <td>Spanish</td>
+            <td>Spanish</td>
+            <td>History</td>
+            <td>Music</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>English</td>
+            <td>Chemistry</td>
+            <td>Art</td>
+            <td>Biology</td>
+            <td>Physics</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>Drama</td>
+            <td>German</td>
+            <td>Maths</td>
+            <td>Games</td>
+            <td>English</td>
+          </tr>
+        </table>
+    </div>
+
+    <div id="table2-1">
+      <br>
+      <h1 style="color: white"> Week 2 </h1>
+      <table class="timetable">
+        <tr>
+          <th>Period</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+        <tr>
+          <td><b>1</b></td>
+          <td>English</td>
+          <td>Art</td>
+          <td>Maths</td>
+          <td>PE</td>
+          <td>English</td>
+        </tr>
+        <tr>
+          <td> 2 </td>
+          <td>Spanish</td>
+          <td>English</td>
+          <td>Chemistry</td>
+          <td>Geography</td>
+          <td>Drama</td>
+        </tr>
+        <tr>
+          <td> 3 </td>
+          <td>PRE</td>
+          <td>Physics</td>
+          <td>Biology</td>
+          <td>Music</td>
+          <td>Computer Science</td>
+        </tr>
+        <tr>
+          <td> 4 </td>
+          <td>German</td>
+          <td>Maths</td>
+          <td>German</td>
+          <td>DT / Food Tech</td>
+          <td>Food Tech / DT</td>
+        </tr>
+        <tr>
+          <td> 5 </td>
+          <td>Maths</td>
+          <td>Geography</td>
+          <td>History</td>
+          <td>Games</td>
+          <td>Maths</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+  <section class="eight-two" style="display: none">
+    <button class="toggle-button" onclick="toggleEightTwo()">Toggle Tables</button>
+    <br>
+    <br>
+    <h1 style="font-size: 1.5rem; font-weight: 1000;"> 8.2 </h1>
+
+    <div id="table1-2">
+      <br>
+      <h1> Week 1 </h1>
+      <b>
+        <table class="timetable">
+          <tr>
+            <th>Period</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+          <tr>
+            <td><b>1</b></td>
+            <td>English</td>
+            <td>French</td>
+            <td>PSHE</td>
+            <td>English</td>
+            <td>Geography</td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td>Maths</td>
+            <td>History</td>
+            <td>Maths</td>
+            <td>Music</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td>Maths</td>
+            <td>PE</td>
+            <td>Geography</td>
+            <td>German</td>
+            <td>Drama</td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td>PRE</td>
+            <td>Maths</td>
+            <td>Physics</td>
+            <td>Dance</td>
+            <td>DT</td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td>Drama</td>
+            <td>Chemistry</td>
+            <td>Biology</td>
+            <td>Games</td>
+            <td>Maths</td>
+          </tr>
+        </table>
+    </div>
+
+    <div id="table2-2">
+      <br>
+      <h1 style="color: white"> Week 2 </h1>
+      <table class="timetable">
+        <tr>
+          <th>Period</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+        <tr>
+          <td><b>1</b></td>
+          <td>Food Science</td>
+          <td>Dance</td>
+          <td>English</td>
+          <td>French</td>
+          <td>Art</td>
+        </tr>
+        <tr>
+          <td> 2 </td>
+          <td>Computer Science</td>
+          <td>German</td>
+          <td>Art</td>
+          <td>Biology</td>
+          <td>English</td>
+        </tr>
+        <tr>
+          <td> 3 </td>
+          <td>Chemistry</td>
+          <td>History</td>
+          <td>PE</td>
+          <td>English</td>
+          <td>Geography</td>
+        </tr>
+        <tr>
+          <td> 4 </td>
+          <td>History</td>
+          <td>Maths</td>
+          <td>Physics</td>
+          <td>Maths</td>
+          <td>German</td>
+        </tr>
+        <tr>
+          <td> 5 </td>
+          <td>French</td>
+          <td>PRE</td>
+          <td>Computer Science</td>
+          <td>Games</td>
+          <td>Music</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+</html>
+<script>
+  //toggles to next
+  function toggleEightOne() {
+    var table1 = document.getElementById('table1-1');
+    var table2 = document.getElementById('table2-1');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+
+  function toggleEightTwo() {
+    var table1 = document.getElementById('table1-2');
+    var table2 = document.getElementById('table2-2');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+
+  function toggleEightThree() {
+    var table1 = document.getElementById('table1-3');
+    var table2 = document.getElementById('table2-3');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+
+  function toggleEightFour() {
+    var table1 = document.getElementById('table1-4');
+    var table2 = document.getElementById('table2-4');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+
+  function toggleEightFive() {
+    var table1 = document.getElementById('table1');
+    var table2 = document.getElementById('table2');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+
+  function toggleEightSix() {
+    var table1 = document.getElementById('table1-6');
+    var table2 = document.getElementById('table2-6');
+    if (table1.style.display === 'block') {
+      table1.style.display = 'none';
+      table2.style.display = 'block';
+    } else {
+      table1.style.display = 'block';
+      table2.style.display = 'none';
+    }
+  }
+  //Changing to different classes
+  const eightOne = document.querySelector('.eight-one');
+  const eightTwo = document.querySelector('.eight-two');
+  const eightThree = document.querySelector('.eight-three');
+  const eightFour = document.querySelector('.eight-four');
+  const eightFive = document.querySelector('.eight-five');
+  const eightSix = document.querySelector('.eight-six');
+  const customTable = document.querySelector('.eight-custom');
+
+  function eightOneChange() {
+    eightOne.style.display = "block";
+    eightTwo.style.display = "none";
+    eightThree.style.display = "none";
+    eightFour.style.display = "none";
+    eightFive.style.display = "none";
+    eightSix.style.display = "none";
+  }
+
+  function eightTwoChange() {
+    eightOne.style.display = "none";
+    eightTwo.style.display = "block";
+    eightThree.style.display = "none";
+    eightFour.style.display = "none";
+    eightFive.style.display = "none";
+    eightSix.style.display = "none";
+  }
+
+  function eightThreeChange() {
+    eightOne.style.display = "none";
+    eightTwo.style.display = "none";
+    eightThree.style.display = "block";
+    eightFour.style.display = "none";
+    eightFive.style.display = "none";
+    eightSix.style.display = "none";
+  }
+
+  function eightFourChange() {
+    eightOne.style.display = "none";
+    eightTwo.style.display = "none";
+    eightThree.style.display = "none";
+    eightFour.style.display = "block";
+    eightFive.style.display = "none";
+    eightSix.style.display = "none";
+  }
+
+  function eightFiveChange() {
+    eightOne.style.display = "none";
+    eightTwo.style.display = "none";
+    eightThree.style.display = "none";
+    eightFour.style.display = "none";
+    eightFive.style.display = "block";
+    eightSix.style.display = "none";
+  }
+
+  function eightSixChange() {
+    eightOne.style.display = "none";
+    eightTwo.style.display = "none";
+    eightThree.style.display = "none";
+    eightFour.style.display = "none";
+    eightFive.style.display = "none";
+    eightSix.style.display = "block";
+  }
+
+  function createTimetable() {
+    alert('Redirecting to a temporary website. This is because, to limit issues with code, disrupting other Brungle services, the dev team ( me ) have decided to move all "experimental", "beta" and "new" features to temporary sites until all bugs have been cleared. Appreciation to your understanding. Ok to proceed ... ');
+    window.location.href = "https://temporary-timetable-custom-brungle.pages.dev/";
+  }
+  // back to brungle
+  function back() {
+    window.location.href = "https://brungle.pages.dev";
+  }
+
+  alert('Hello User!. Just as a Notice, only 8.3 and 8.5 have a fully written timetable. Sorry for the inconvienicne. From September Onwards, we will be 100% up to date with timetables from Year 7 to Year 9.');
+</script>
